@@ -11,5 +11,5 @@
   "footer": "© {year} OK TO FAIL. All images are protected by copyright. · [About & Privacy Policy](/about)",
   "firstYear": 2026,
   "postsPerLoad": 10,
-  "cleanUrls": true
+  "cleanUrls": false
 }
