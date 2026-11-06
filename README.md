@@ -30,6 +30,8 @@ your-site/
 ├── site.js             ← the "engine". Never edit.
 ├── preview.py          ← optional: preview on your own computer.
 ├── README.md           ← this guide.
+├── wrangler.jsonc      ← settings file for Cloudflare. NEVER DELETE. (section 12)
+├── .assetsignore       ← optional: keeps a few files from being public. (section 12)
 ├── images/             ← ★ ALL YOUR PICTURES GO HERE
 └── content/            ← ★ ALL YOUR WORDS AND LAYOUT GO HERE
     ├── site.json       ← site name, menu, footer, how many posts load at once
@@ -99,6 +101,7 @@ Do this **before** you upload an image:
    - Bad: `Harbor Study (final) 2.JPG`
 
    This matters: the site is case-sensitive, so `Harbor.jpg` and `harbor.jpg` are different files.
+5. **Hidden details (privacy):** photos and exports can carry hidden information, such as the camera owner's name, the location where it was taken, and the date. If you want to keep this private, remove it before uploading. On Windows: right-click the file, choose **Properties**, then **Details**, then **Remove Properties and Personal Information**. On a Mac, Preview's Inspector (**Tools → Show Inspector**) can show and remove location information. Many image editors also have an export option to leave out metadata. Check one exported file before you upload a batch.
 
 ## 5. Add a new blog post with an image
 
@@ -357,7 +360,7 @@ Example: adding an **Exhibitions** page at `yoursite.com/exhibitions`.
 
 The new page is live in a minute or so. Pages you don't add to the menu still work if someone knows the address — handy for private or "unlisted" pages.
 
-> **Don't create a file called `404.html`** anywhere in the site. The site relies on its absence to make addresses like `/about` work on Cloudflare.
+> **Don't create a file called `404.html`** anywhere in the site, and **don't delete `wrangler.jsonc`**. Together they are what make addresses like `/about` work on Cloudflare (section 12).
 
 ## 11. Change the site name, menu, footer, colours, font
 
@@ -373,7 +376,8 @@ Open `content/site.json`.
   "nav": [ ... ],
   "footer": "© {year} Your Name. All images are protected by copyright.",
   "firstYear": 2026,
-  "postsPerLoad": 10
+  "postsPerLoad": 10,
+  "cleanUrls": true
 }
 ```
 - `title` appears top left and in the browser tab. If you set a logo (below), the image replaces the text at the top left, but the title still shows in the browser tab and is read aloud to screen-reader users as the logo's description.
@@ -384,6 +388,32 @@ Open `content/site.json`.
 - `firstYear` is the year of your oldest post file. The site never looks for files before it. Leave it at 2026 unless you add posts from earlier years (then set it to that earlier year and create that year's file).
 - `cleanUrls`: leave as `true`. It only matters if the menu links fail while you preview the site on your own computer or phone (see Troubleshooting, "Cannot GET /about").
 - `postsPerLoad` is how many posts show at first, and how many more each **Load more** click adds. Change `10` to any number. Don't put quotation marks around it.
+
+### Add a link to your shop in the menu
+
+Add one line to the `"nav"` list in `content/site.json`:
+
+```json
+"nav": [
+  { "label": "Blog", "url": "/" },
+  { "label": "About", "url": "/about" },
+  { "label": "Shop", "url": "https://your-shop-address.com" }
+],
+```
+- Use the shop's full address, starting with `https://`. Links to other websites open in a new browser tab automatically.
+- **Commas:** every line in the list needs a comma at the end **except the last one**. When you add a line below About, About needs a comma after its closing brace. Forgetting this is the most common cause of a red "typing mistake" box. Safari describes it as *Expected ']'*, and other browsers say *Expected ',' or ']'*.
+- The order in the list is the order in the menu.
+
+### Add a link in the footer (for example, your privacy policy)
+
+Footer links are written the same way as links in text: `[the words people see](the address)`. Put it right after the copyright wording in the `"footer"` line:
+
+```json
+"footer": "© {year} Your Name. All images are protected by copyright. · [About & Privacy Policy](/about)",
+```
+- For a page on your own site, use just the page address, such as `/about`. For another website, use the full `https://…` address.
+- **Do not write HTML** (`<a href="...">`). The straight quotation marks inside it end the footer text early and break the file.
+- The line ends with a comma, because other lines follow it.
 
 ### Use an image logo instead of text
 
@@ -427,36 +457,77 @@ The site uses **Inter**, a clean modern typeface loaded free from Google Fonts. 
 
 ## 12. Publishing: GitHub and Cloudflare, step by step
 
-You do this setup **once**. After that, every time you save a change on GitHub, Cloudflare publishes it automatically.
+How your site is put together, in plain words:
 
-> Cloudflare redesigns its dashboard from time to time, so button names may differ slightly from those below. The overall path (connect your GitHub repo → no build command → publish) stays the same. If you get stuck, Cloudflare's guide for plain HTML sites is at developers.cloudflare.com/pages/framework-guides/deploy-anything/.
+- **GitHub** stores your files, along with every earlier version of them.
+- **Cloudflare** publishes them. Whenever you save a change on GitHub, Cloudflare notices and updates the live site, usually within a minute or two.
+- Your **shop** (for example Fourthwall) can stay on your main domain. This blog lives on a subdomain such as `blog.yourdomain.com`. The two don't interfere with each other.
+
+You do the setup **once**. After that, you only edit files on GitHub.
+
+> Cloudflare and GitHub change their screens from time to time, so button names may differ slightly from those below. If a screen doesn't match, the goal of each step is the same.
 
 ### Part 1 — Put the site on GitHub
 
-1. Create a free account at [github.com](https://github.com).
-2. Click the **+** at the top right → **New repository**.
-3. Name it something like `portfolio` (lowercase, no spaces). Choose **Public** (Private also works with Cloudflare). Click **Create repository**.
-4. On the new empty repository page click **uploading an existing file**.
-5. Open this site folder on your computer. **Select everything inside it** (index.html, style.css, site.js, preview.py, README.md, and the `images` and `content` folders) and drag it all into the GitHub page. Wait for the uploads to finish.
-6. Click **Commit changes**.
+1. Create a free account at [github.com](https://github.com). **If you want to keep your real name off this project,** choose a username that isn't your name, then open **Settings → Emails** and turn on **Keep my email addresses private**.
+2. Click the **+** at the top right → **New repository**. Name it something like `blog` (lowercase, no spaces). Public and private both work with Cloudflare. Click **Create repository**.
+3. On the new empty repository page, click **uploading an existing file**. (Later, from the repository's main page, the same screen is under **Add file → Upload files**.)
+4. Open your site folder on your computer and drag its **contents** into the box: `index.html`, `style.css`, `site.js`, `wrangler.jsonc`, `README.md`, `preview.py`, and the `images` and `content` folders. Don't drag the site folder itself, or `index.html` ends up one level too deep.
+   - **Use Chrome or Firefox for uploading.** Dropping whole folders is unreliable in Safari.
+   - If GitHub says *"Something went really wrong, and we can't process that file"*, upload in smaller batches, committing after each: first the loose files, then the `images` folder, then the `content` folder. Leave out hidden files such as `.DS_Store`.
+5. Scroll down and click **Commit changes**.
 
-> **Check:** `index.html` should be visible at the top level of your repository (not inside another folder).
+> **Check:** `index.html`, `site.js`, `style.css`, `wrangler.jsonc` and the `images` and `content` folders should be listed on the repository's main page, not inside another folder.
 
-### Part 2 — Connect it to Cloudflare
+### Part 2 — The settings file (`wrangler.jsonc`)
+
+Cloudflare needs a small settings file at the top level of your repository, named exactly `wrangler.jsonc`. It tells Cloudflare where your site files are, and it makes addresses like `/about` work. It looks like this:
+
+```jsonc
+{
+  "name": "your-worker-name",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./",
+    "not_found_handling": "single-page-application"
+  }
+}
+```
+
+- `name` must **exactly match your Worker's name in Cloudflare**. That's the first part of its `.workers.dev` address, before the first dot.
+- Leave the other lines alone.
+- **Never delete this file.** Without it, `/about` and other page addresses stop working, though `/?p=about` still would.
+
+**Optional: keep a few files from being public.** Everything in the repository is published, including `README.md` and `preview.py`. To hide them, create a file named exactly `.assetsignore` (the dot at the start matters) containing:
+
+```
+wrangler.jsonc
+README.md
+preview.py
+```
+
+Your computer may hide or refuse dot-files, so create it on GitHub: **Add file → Create new file**, type `.assetsignore` as the name, paste the three lines, and commit.
+
+### Part 3 — Connect GitHub to Cloudflare
 
 1. Create a free account at [cloudflare.com](https://www.cloudflare.com).
-2. In the dashboard find **Workers & Pages**, click **Create application**, then choose the **Pages** option and **Import an existing Git repository**.
-3. Connect your GitHub account when asked and choose your `portfolio` repository.
-4. Fill in the settings:
-   - **Production branch:** `main`
-   - **Framework preset:** None
-   - **Build command:** `exit 0` (this just means "there's nothing to build")
-   - **Build output directory:** `/` (the top level of the repository, since your files aren't inside a sub-folder)
-5. Click **Save and Deploy**. After about a minute you'll get a free address ending in `.pages.dev`. Open it. Your site is live.
+2. In the dashboard open **Workers & Pages**, click **Create application**, and choose the option to connect a **Git repository**. Authorize GitHub when asked and pick your repository.
+3. Leave the **build command** empty. If a **deploy command** is already filled in (normally `npx wrangler deploy`), leave it.
+4. Save and deploy. You'll get a free address ending in `.workers.dev`. Open it, check the home page, then add `/about` to the end of the address and check that the About page loads.
 
-### Part 3 — Use your own domain name (optional)
+### Part 4 — Put the blog on `blog.yourdomain.com`
 
-In your Cloudflare Pages project open **Custom domains** and follow the prompts. If you buy the domain through Cloudflare, it connects almost automatically.
+This assumes your domain's DNS is managed by Cloudflare.
+
+1. In **Workers & Pages**, open your Worker.
+2. Go to **Settings → Domains & Routes → Add → Custom Domain**.
+3. Type `blog.yourdomain.com` (using your real domain) and click **Add Custom Domain**.
+4. Wait a few minutes. Cloudflare creates the DNS record and a security certificate for you.
+5. Open `https://blog.yourdomain.com` and `https://blog.yourdomain.com/about` to check.
+
+**If Cloudflare reports a conflict:** you can't add a custom domain to a name that already has a **CNAME** record. Open **DNS → Records** for your domain and delete only a record named `blog`. **Never change the other records**, especially the ones for your main domain. Your shop depends on them.
+
+Your free `.workers.dev` address keeps working alongside the custom domain. Adding the shop link to your menu and a footer link is in section 11.
 
 ### Everyday editing workflow
 
@@ -467,7 +538,18 @@ In your Cloudflare Pages project open **Custom domains** and follow the prompts.
 **Undoing a mistake:** on GitHub open the file, click **History**, pick an earlier version, and copy its contents back. Every change you've ever made is saved.
 
 ### Optional: preview before publishing
-If Python is installed, open a terminal in the site folder and run `python3 preview.py`, then open `http://localhost:8000`. This lets you see changes on your own computer before uploading. Not required.
+
+If Python is installed, open a terminal in the site folder and run `python3 preview.py`, then open `http://localhost:8000`. VS Code's "Live Server" also works, including on your phone through port forwarding. Not required.
+
+### Keeping your real name out of it
+
+If this is a pseudonymous project, check each of these:
+
+- **Domain registration:** turn on your registrar's privacy option, so your name and address aren't shown in public lookups.
+- **GitHub:** use a username that isn't your name, turn on **Keep my email addresses private**, and set a display name you're happy to show.
+- **Image files:** remove hidden details before uploading (section 4, step 5).
+- **Your shop:** check what name or business details your shop platform shows to customers, on receipts and in emails.
+- **This site:** use your pen name in `title` and in the `footer` text in `content/site.json`.
 
 ## 13. Troubleshooting
 
@@ -476,9 +558,14 @@ If Python is installed, open a terminal in the site folder and run `python3 prev
 | A red box: *"The file … has a typing mistake in it"* | A JSON rule was broken (usually a missing or extra comma, quote or bracket). | Read the "near line N" hint, go to that line **and the one just above it**. Check commas and quotes. Paste the file into jsonlint.com for the exact spot. If you can't find it, use **History** on GitHub to go back to the last working version. |
 | A red box: *"Could not load image: images/…"* | The file name in the JSON doesn't match the uploaded file. | Check spelling, capital letters, and the extension (`.jpg` vs `.jpeg`). Confirm the file is inside the `images` folder. |
 | Red box: *"unknown block type"* | The `"type"` is misspelled. | Allowed types: `image`, `row`, `text`, `heading`, `links`, `divider`, `spacer`. |
-| "Cannot GET /about" when previewing on your own computer | Your preview tool (for example VS Code "Live Server") only serves files that exist, and `/about` is not a file. | The site handles this automatically when it recognises it's being previewed: on your own computer, on other devices on your home network (such as your phone), and through common port-forwarding tunnels, menu links look like `/?p=about` and work in Live Server. If you still see the message, either you typed `/about` into the address bar yourself (use `/?p=about` instead), or your preview address wasn't recognised. In that case open `content/site.json` and change `"cleanUrls": true` to `"cleanUrls": false`. That makes the menu use the `/?p=about` style everywhere, which works on any server. **Change it back to `true` before publishing** if you want clean addresses like `yoursite.com/about` (the site still works if you forget). On Cloudflare, `/about` works normally. |
+| "Cannot GET /about" when previewing on your own computer | Your preview tool (for example VS Code "Live Server") only serves files that exist, and `/about` is not a file. | The site handles this automatically when it recognises it's being previewed: on your own computer, on other devices on your home network (such as your phone), and through common port-forwarding tunnels, menu links look like `/?p=about` and work in Live Server. If you still see the message, either you typed `/about` into the address bar yourself (use `/?p=about` instead), or your preview address wasn't recognised. In that case open `content/site.json` and change `"cleanUrls": true` to `"cleanUrls": false`. That makes the menu use the `/?p=about` style everywhere, which works on any server. **Change it back to `true` before publishing** if you want clean addresses like `yoursite.com/about` (the site still works if you forget). On your live site, `/about` works as long as `wrangler.jsonc` is in your repository (section 12). |
+| `/about` shows an error on the live site, but `/?p=about` works | Cloudflare isn't set to show your main page for page addresses. | Check that `wrangler.jsonc` is at the top level of your repository, that its `"name"` matches your Worker's name exactly, and that there is no `404.html`. Then check your Worker's build log for errors. Quick workaround: set `"cleanUrls": false` in `content/site.json`. |
+| Cloudflare's build fails after you changed something | A settings file is wrong or missing. | Open the failed build in Cloudflare and read the error. Your previous site stays live meanwhile. Most often it's a typo in `wrangler.jsonc`, or a name that doesn't match your Worker. |
+| GitHub says *"Something went really wrong, and we can't process that file"* | Dragging whole folders failed, most often in Safari. | Use Chrome or Firefox, and upload in smaller batches (section 12, Part 1). |
+| GitHub's editor says "switch to editor" and nothing happens | The editor didn't load, usually due to the browser or a content blocker. | Try Chrome or Firefox, turn off content blockers for github.com, or press `e` while viewing the file. As a fallback, edit the file on your computer and upload it over the old one with **Add file → Upload files**. |
+| The menu or footer link breaks the whole page | A comma is missing, or HTML was typed into the text. | Menu: a comma after every line except the last (section 11). Footer: use `[words](/about)`, never `<a href="...">`. |
 | "Page not found" | There's no JSON file with that name. | Make sure the file is in `content/pages/`, lowercase, ending in `.json`, and the address matches. |
-| My edit doesn't show | Browser or Cloudflare hasn't updated yet. | Wait 1–2 minutes, then hard refresh. Check the **Deployments** tab in Cloudflare for a green "Success". |
+| My edit doesn't show | Browser or Cloudflare hasn't updated yet. | Wait 1–2 minutes, then hard refresh. In Cloudflare, open your Worker and check its **Deployments** or **Builds** page for a success message. |
 | A new post doesn't appear | It may be marked `"draft": true`, it may be in the wrong year's file, or it's just below the first 10 posts. | Remove the draft line. Make sure you edited the right file in `content/posts/`. Click **Load more** at the bottom of the page. |
 | A red box: *"Problem in content/posts/2026.json"* | That year's file has a typing mistake. Only that year is affected. The other years still show. | Follow the line hint in the box and fix it (see the first row of this table). |
 | "There are no posts yet." | The site found no posts file. | Check that `content/posts/2026.json` exists, and that `firstYear` in `site.json` isn't later than the year of your posts file. |
@@ -522,3 +609,9 @@ If Python is installed, open a terminal in the site folder and run `python3 prev
 **Always:** straight quotes around words · commas between items · no comma after the last item · matching `{ }` and `[ ]` · no straight `"` inside text.
 
 **Images:** about 1520 px wide, JPG, under 500 KB, lowercase-with-dashes file names, uploaded to `images/`.
+
+**A menu link to another website:** `{ "label": "Shop", "url": "https://your-shop-address.com" }`
+
+**A link inside the footer:** `[About & Privacy Policy](/about)`
+
+**Never delete:** `wrangler.jsonc`. **Never create:** `404.html`.
