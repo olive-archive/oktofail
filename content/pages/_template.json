@@ -1,0 +1,20 @@
+{
+  "title": "Page Title",
+  "description": "One sentence describing this page (shown in search results).",
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Page Title" },
+    {
+      "type": "text",
+      "text": [
+        "Your first paragraph goes here.",
+        "Your second paragraph goes here."
+      ]
+    },
+    {
+      "type": "image",
+      "src": "images/your-image-file-name.jpg",
+      "alt": "Describe the image in a few words",
+      "caption": "Optional caption"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "title": "OK TO FAIL",
+  "logo": "",
+  "logoHeight": 40,
+  "description": "Artwork and works in progress by OK TO FAIL.",
+  "nav": [
+    { "label": "Blog", "url": "/" },
+    { "label": "About", "url": "/about" },
+    { "label": "Shop", "url": "https://www.oktofail.com" }
+  ],
+  "footer": "© {year} OK TO FAIL. All images are protected by copyright. · [About & Privacy Policy](/about)",
+  "firstYear": 2026,
+  "postsPerLoad": 10,
+  "cleanUrls": true
+}

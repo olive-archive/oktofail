@@ -1,0 +1,23 @@
+{
+  "title": "About",
+  "description": "About the artist, and where to find their work.",
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "About" },
+    {
+      "type": "text",
+      "text": [
+        "Write a short paragraph about yourself and your work here. Keep it simple and in your own voice.",
+        "A second paragraph is optional. You can add *italics*, **bold**, or a [link](https://www.example.com) anywhere in the text."
+      ]
+    },
+    { "type": "heading", "level": 2, "text": "Shop" },
+    {
+      "type": "links",
+      "items": [
+        { "label": "Etsy Shop",     "url": "https://www.example.com/your-etsy-shop" },
+        { "label": "Prints Store",  "url": "https://www.example.com/your-print-store" },
+        { "label": "Email me",      "url": "mailto:you@example.com" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "posts": [
+    {
+      "date": "2026-11-03",
+      "title": "",
+      "blocks": [
+        {
+          "type": "image",
+          "src": "images/thenet.jpg",
+          "alt": "A tree with a bunch of branches that have tangled and caught a green net.",
+          "caption": "*The State of Things*, 2006. Analog film capture, C-Print."
+        },
+        {
+          "type": "text",
+          "text": [
+            "This is a sample paragraph. Replace it with your own words, or delete this whole block if you only want pictures.",
+            "Each line inside the square brackets is its own paragraph. You can make words **bold**, *italic*, or [link to another site](https://www.example.com)."
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "blocks": [
+        {
+          "type": "image",
+          "src": "images/sample-1.jpg",
+          "alt": "A post with no title, just a date and a picture"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "posts": [
+    {
+      "date": "2027-01-15",
+      "title": "Optional title",
+      "blocks": [
+        {
+          "type": "image",
+          "src": "images/your-image-file-name.jpg",
+          "alt": "Describe the image in a few words",
+          "caption": "Optional caption"
+        }
+      ]
+    }
+  ]
+}

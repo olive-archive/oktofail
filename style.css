@@ -1,0 +1,264 @@
+/* ==========================================================
+   STYLE.CSS — how the site looks.
+   The settings you are most likely to change are right here
+   at the top, inside :root { ... }. Change the values after
+   the colons, save, and the whole site updates.
+   ========================================================== */
+
+:root {
+  --bg:        #fafaf8;   /* page background (soft off-white). Pure white would be #ffffff */
+  --text:      #222222;   /* main text colour */
+  --muted:     #6b6b6b;   /* dates, captions, footer */
+  --line:      #e6e4df;   /* thin lines */
+
+  --container: 900px;     /* overall width of the site area */
+  --content:   760px;     /* width of images and text inside it */
+
+  --header-pad: 18px;     /* space above and below the name/menu bar (smaller = slimmer bar) */
+  --header-gap: 36px;     /* space between the bar and the first post */
+
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ---------- Basics ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-weight: 400;
+  font-size: 1.0625rem;       /* 17px */
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+a:hover { opacity: 0.65; }
+a:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+
+/* ---------- Layout: 900px container, 760px content ---------- */
+
+.container {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 20px;                 /* small screens: simple side margins */
+}
+
+@media (min-width: 900px) {
+  .container { padding: 0 calc((var(--container) - var(--content)) / 2); }   /* 70px each side → 760px content */
+}
+
+/* ---------- Header & navigation ---------- */
+
+.site-header {
+  /* Sticky: stays at the top of the screen while scrolling.
+     To turn this off, change "sticky" to "static" on the next line. */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 32px;
+  padding: var(--header-pad) 0;
+  background: var(--bg);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+/* A thin line appears under the bar once the page has scrolled */
+.site-header.is-stuck { border-bottom-color: var(--line); }
+
+#content { padding-top: var(--header-gap); }
+
+.site-title {
+  font-size: 1.0625rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+}
+
+/* Image logo (optional): lines up with the menu by its centre, not its text baseline */
+.site-header.has-logo { align-items: center; }
+.site-logo {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: left center;
+}
+/* On phones, keep a tall logo from making the sticky bar too big */
+@media (max-width: 560px) {
+  .site-logo { max-height: 44px; }
+}
+
+#site-nav { display: flex; flex-wrap: wrap; gap: 8px 28px; }
+
+#site-nav a {
+  font-size: 0.8125rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--muted);
+  /* Bigger touch area for thumbs; the negative margin keeps the look unchanged. */
+  padding: 12px 6px;
+  margin: -12px -6px;
+}
+#site-nav a:hover { opacity: 1; color: var(--text); }
+#site-nav a[aria-current="page"] { color: var(--text); }
+
+/* ---------- Content blocks ---------- */
+
+.block { margin: 0 0 48px; }
+
+.block img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+figure.block { margin-left: 0; margin-right: 0; }
+
+figcaption {
+  margin-top: 12px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* Row of images side by side */
+.row {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 560px) {
+  .row { grid-template-columns: 1fr; }
+}
+
+.row .cell { margin: 0; }
+
+/* Text */
+.text p { margin: 0 0 1.2em; }
+.text p:last-child { margin-bottom: 0; }
+.text.center { text-align: center; }
+.text.small { font-size: 0.9375rem; color: var(--muted); }
+
+/* Headings */
+h1.block, h2.block, h3.block {
+  font-weight: 500;
+  line-height: 1.3;
+  margin-bottom: 24px;
+}
+h1.block { font-size: 1.75rem; letter-spacing: -0.01em; }
+h2.block { font-size: 1.25rem; margin-top: 64px; }
+h3.block { font-size: 1.0625rem; margin-top: 40px; }
+h1.block:first-child, h2.block:first-child, h3.block:first-child { margin-top: 0; }
+
+/* Link buttons (store links etc.) */
+.links { display: flex; flex-wrap: wrap; gap: 12px; }
+.links a {
+  display: inline-block;
+  padding: 0.6em 1.2em;
+  border: 1px solid var(--text);
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.links a:hover { background: var(--text); color: var(--bg); opacity: 1; }
+
+/* Divider & spacer */
+hr.block { border: 0; border-top: 1px solid var(--line); margin-top: 24px; margin-bottom: 72px; }
+
+/* ---------- Blog posts ---------- */
+
+.post { margin: 0 0 104px; scroll-margin-top: calc(var(--header-h, 70px) + 16px); }
+
+.post-meta { margin: 0 0 20px; }
+
+.post-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 2px;
+}
+.post-top .post-date { margin-bottom: 0; }
+
+.post-link {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  /* Bigger touch area for thumbs; the negative margin keeps the look unchanged. */
+  padding: 12px 0 12px 12px;
+  margin: -12px 0 -12px -12px;
+}
+.post-link:hover { opacity: 1; color: var(--text); }
+
+/* "Load more" button */
+.load-more-wrap { text-align: center; padding: 0 0 96px; }
+.load-more-wrap[hidden] { display: none; }
+.load-more {
+  font: inherit;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  padding: 0.7em 1.8em;
+  border: 1px solid var(--text);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.load-more:hover:not(:disabled) { background: var(--text); color: var(--bg); }
+.load-more:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+.load-more:disabled { opacity: 0.5; cursor: default; }
+.post-title { margin: 0; font-size: 1.0625rem; font-weight: 500; line-height: 1.4; }
+.post-date {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+  padding: 40px 0 56px;
+  border-top: 1px solid var(--line);
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+/* ---------- Messages (errors / loading) ---------- */
+
+.message {
+  padding: 20px 24px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: 0.9375rem;
+}
+.message.error { border-color: #c0392b; }
+.message strong { font-weight: 500; }
+.message code {
+  display: block;
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: var(--bg);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
