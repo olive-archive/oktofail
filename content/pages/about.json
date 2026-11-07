@@ -15,7 +15,6 @@
         "There is a sign-up form (below) for my email newsletter which is hosted and managed by beehiiv. If you decide to sign up you will be giving me your email address so that I may send you the newsletter. beehiiv does by default track if newsletters were delivered, opened, etc. As far as I know this cannot be turned off but I won’t ever sell your data or use it for anything other than to deliver the newsletter. I’m just a solitary visual artist, not a data broker."
       ]
     },
-    "{ "type": "embed", "url": "https://subscribe-forms.beehiiv.com/v3/loader.js", "height": 320, "title": "Subscribe to the newsletter" }"
     { "type": "heading", "level": 2, "text": "Shop" },
     {
       "type": "links",
