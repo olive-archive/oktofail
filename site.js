@@ -396,24 +396,17 @@
         );
       }
 
-      case "embed": {
-        if (!b.url || !/^https:\/\/[^"\s]+$/i.test(b.url)) {
+      case "beehiiv": {
+        if (!b.form || !/^[A-Za-z0-9-]+$/.test(b.form)) {
           return warn(
-            where + ': the embed block needs a "url" starting with https://',
+            where +
+              ': the beehiiv block needs a "form" id (letters, numbers and dashes only).',
           );
         }
-        var eh = parseInt(b.height, 10);
-        if (!(eh > 0)) {
-          eh = 320;
-        }
         return (
-          '<div class="block"><iframe src="' +
-          esc(b.url) +
-          '" title="' +
-          esc(b.title || "Embedded form") +
-          '" width="100%" height="' +
-          Math.min(eh, 1200) +
-          '" frameborder="0" scrolling="no" loading="lazy" style="border:0;max-width:100%;background:transparent"></iframe></div>'
+          '<div class="block beehiiv-slot" data-form="' +
+          esc(b.form) +
+          '"></div>'
         );
       }
 
@@ -558,6 +551,19 @@
         return renderPost(it.p, postLabel("Page", it));
       })
       .join("");
+  }
+
+  // Starts any beehiiv sign-up forms on the page (see the "beehiiv" block).
+  function loadBeehiivForms(root) {
+    var slots = root.querySelectorAll(".beehiiv-slot:not([data-ready])");
+    for (var i = 0; i < slots.length; i++) {
+      var s = document.createElement("script");
+      s.async = true;
+      s.src = "https://subscribe-forms.beehiiv.com/v3/loader.js";
+      s.setAttribute("data-beehiiv-form", slots[i].getAttribute("data-form"));
+      slots[i].setAttribute("data-ready", "1");
+      slots[i].appendChild(s);
+    }
   }
 
   // If a picture file can't be found, say so plainly instead of showing a broken icon.
@@ -998,6 +1004,7 @@
         );
       }
       contentEl.insertAdjacentHTML("beforeend", html);
+      loadBeehiivForms(contentEl);
       watchImages(contentEl);
       contentEl.addEventListener("click", copyPostLink);
 
