@@ -13,8 +13,9 @@
         "**Privacy Policy**\nThis website does not collect any data from visitors. Plain and simple. I don’t care about analytics and would rather spend my time making things than spying on people. ",
         "My shop is hosted by Fourthwall and they have their own privacy policy as do my social media accounts (Instagram, TikTok, LinkedIn). Please refer to the privacy policies on those sites for more details. Of course if you buy something from my shop you agree to disclose certain information so that the transaction can be completed.",
         "There is a sign-up form (below) for my email newsletter which is hosted and managed by beehiiv. If you decide to sign up you will be giving me your email address so that I may send you the newsletter. beehiiv does by default track if newsletters were delivered, opened, etc. As far as I know this cannot be turned off but I won’t ever sell your data or use it for anything other than to deliver the newsletter. I’m just a solitary visual artist, not a data broker."
-      ]},
-    { "type": "beehiiv", "form": "0dce7079-ce3f-41c9-823f-083ddd257605" }
+      ]
+    },
+    { "type": "beehiiv", "form": "0dce7079-ce3f-41c9-823f-083ddd257605" },
 
     { "type": "heading", "level": 2, "text": "Shop" },
     {
