@@ -1013,6 +1013,10 @@
       }
     });
   }
-
+  document.addEventListener("contextmenu", function (e) {
+    if (e.target && e.target.tagName === "IMG") {
+      e.preventDefault();
+    }
+  });
   init();
 })();
